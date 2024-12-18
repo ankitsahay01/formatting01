@@ -1,0 +1,43 @@
+{
+  "name": "rcwilley",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "merge-reports": "mochawesome-merge mochawesome-report/*.json > mochawesome-report/merged_report.json",
+    "generate-report": "marge mochawesome-report/merged_report.json --reportDir mochawesome-report",
+    "start": "node server.js"
+  },
+  "author": "Ravikumar",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@babel/core": "^7.25.8",
+    "@babel/preset-env": "^7.25.8",
+    "@cypress/code-coverage": "^3.13.4",
+    "babel-plugin-istanbul": "^7.0.0",
+    "cypress": "^13.15.1",
+    "cypress-cucumber-preprocessor": "^4.3.1",
+    "cypress-iframe": "^1.0.1",
+    "cypress-mochawesome-reporter": "^3.8.2",
+    "nyc": "^17.1.0",
+    "sonarqube-scanner": "^4.2.5"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": false,
+    "step_definitions": "cypress/e2e/stepDefinitions"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "lcov"
+    ],
+    "all": true,
+    "include": [
+      "**/**/*.js",
+      "**/*.spec.js",
+      "**/*.feature"
+    ],
+    "exclude": []
+  }
+}

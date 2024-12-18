@@ -1,0 +1,43 @@
+stages:
+  - Cypress-Test
+  - Lighthouse-Test
+
+Cypress-Test-Job:
+  image: cypress/browsers
+  stage: Cypress-Test
+  script:
+    # Installing Cypress and dependencies
+    - npm ci
+    - npm install cypress-cucumber-preprocessor --save-dev
+    - npm install mochawesome --save-dev
+    - npm install --save-dev mochawesome mochawesome-merge mochawesome-report-generator cypress-mochawesome-reporter
+    # Running Cypress
+    - npx cypress run || true
+    - echo "Inspecting mochawesome-report/.jsons directory:"
+    - ls -l mochawesome-report/.jsons/
+  artifacts:
+    when: always
+    paths:
+      - mochawesome-report/**
+      - cypress/screenshots/**/*.png
+      - cypress/videos/**/*.mp4
+    expire_in: 14 days
+  allow_failure: true # Allows this job to fail without failing the pipeline
+
+Lighthouse-Job:
+  stage: Lighthouse-Test
+  script:
+    # Run Lighthouse CI using preinstalled tools
+    - lhci autorun --max-wait-for-load=120000 --chrome-flags="--no-sandbox --disable-dev-shm-usage" || true
+
+    # Moving reports to artifacts directory
+    - mkdir -p lighthouse-report
+    - mv .lighthouseci/* ./lighthouse-report/
+
+  artifacts:
+    paths:
+      - lighthouse-report/** 
+    expire_in: 12 days  
+
+  dependencies:
+    - Cypress-Test-Job
